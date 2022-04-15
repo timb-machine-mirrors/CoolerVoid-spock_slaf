@@ -15,7 +15,7 @@ Features
 * If detect anomaly in TLS context, Spock saves the IP address of the attacker, date time and attack "payload" register in log file "spock_agressors.log".
 
 
-The first step to deploy
+The first step compile to deploy
 --
 
 Clone the repository:
@@ -33,6 +33,9 @@ $ make clean; make
 ```
 Now you can see the shared library "spock_slaf.so.1" in "bin" directory.
 
+Second step inject
+--
+
 Second step is inject shared library in your binary that uses OpenSSL following communication context(server).
 So uses [LD_PRELOAD](https://catonmat.net/simple-ld-preload-tutorial) trick:
 ```
@@ -42,6 +45,8 @@ $ LD_PRELOAD=/home/cooler/spock_slaf/bin/spock_slaf.so.1 bin/optionscat
 Looking to this example, so has been tested in [OptionsCat financial software](https://github.com/CoolerVoid/optionscat).
 If anyone attacks the optionscat server, you can see the full log in the file "spock_agressors.log".
 
+Thank you
+--
 * Thank you for using my tool. Any problem with the tool or suggestion, please open a GitHub issue in this repository. I will be delighted to help anyone.
 
 * **Curious fact:** The name Spock is my dog's name and a little homage to the Star Trek series.
