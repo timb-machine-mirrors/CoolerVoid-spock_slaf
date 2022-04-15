@@ -1,4 +1,4 @@
-CFLAGS+=-Wall -Werror -fstack-protector-all  
+CFLAGS+=-Wall -Werror -D_GNU_SOURCE -fstack-protector-all  
 LDFLAGS+=-lc -Wl,-z,relro,-z,now
 RM?=rm -f
 
