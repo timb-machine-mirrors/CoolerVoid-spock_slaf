@@ -6,7 +6,7 @@ My beginning purpose in this project is to protect any binary that has communica
 
 The motivation for this tool was released during a mitigation project in the past seven years an old. Following my freelancer task, an old client has disclosed a problem around deprecated proprietary binary with many vulnerabilities like Heap buffer overflows, remote buffer overflow and path traversal. The big problem of binary context is the application turn abandonware with no patch fixes, but the enterprise needs to run production loads. So my solution was to insert [seccomp()](https://kubernetes.io/docs/tutorials/security/seccomp/) to restrict syscalls in the process(you know, block calls like system()/execv()). I replaced libc's malloc() with ["DieHard", an error-resistant memory allocator](https://github.com/emeryberger/DieHard). On the other hand, another initiative was little hooking in OpenSSL's SSL_read() function to restrict some evil payloads.
 
-Following additional facts, external rules of server using [BSD's firewall](https://www.openbsd.org/faq/pf/filter.html)(aka packet filter), using custom rules to allow only by IP and OS fingerprint. So that freelancer task stuck in my mind, now you can see my new solution following a global approach to protect TLS communication in the server context.
+Following additional facts, external rules of server using [BSD's firewall](https://www.openbsd.org/faq/pf/filter.html)(aka packet filter), using custom rules to [allow only by IP and OS fingerprint](https://www.openbsd.org/faq/pf/filter.html#osfp). So that freelancer task stuck in my mind, now you can see my new solution following a global approach to protect TLS communication in the server context.
 
 Features
 ---
