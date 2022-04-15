@@ -303,8 +303,8 @@ bool spock_check_block(char *input, int num)
 	};
 
 
-    total_list = sizeof(list) / sizeof(list[0]);
-    total_shellcodes = sizeof(custom_shellcode) / sizeof(custom_shellcode[0]);
+	total_list = sizeof(list) / sizeof(list[0]);
+    	total_shellcodes = sizeof(custom_shellcode) / sizeof(custom_shellcode[0]);
 
 	while(i!=total_shellcodes)
 	{
@@ -312,6 +312,8 @@ bool spock_check_block(char *input, int num)
 			return true;
 		i++;
 	}
+
+	i = 0;
 
 	while(i!=total_list)
 	{
@@ -340,37 +342,37 @@ bool spock_detect_anomaly( int fd, void *buf, int num)
 	if(SPOCK_BUGVIEW==1)
 		printf("\n%s---> SPOCK DEBUG MODE <-========\n%s\n=======-> end DEBUG MODE\n%s",CYAN,(char *)buf,LAST);
 
-    if(SPOCK_ONLY_HTTP==1)
-    {
-    	if(spock_is_request((char *)buf)==false)
-    		return false;
-    }
+    	if(SPOCK_ONLY_HTTP==1)
+    	{
+    		if(spock_is_request((char *)buf)==false)
+    			return false;
+    	}
 
 
 	if(spock_check_block((char *)buf,num)==true)
 	{
-        char *attacker_ip=spock_xmalloc(129*sizeof(char));
-        spock_burn_mem(attacker_ip,0,128); // save one byte for canary, if you compile with full hardening argvs
-        spock_get_ip_str(&addr,attacker_ip,128);
-        int lenmax=(num+128+128)*sizeof(char);
-        char *log_line=spock_xmalloc(lenmax);
-        spock_burn_mem(log_line,0,lenmax-1);
-        time_t rawtime = time(NULL);
-    	struct tm *ptm = localtime(&rawtime);
-        snprintf(log_line,lenmax-1,"Attacker IP: %s\ndatetime: %02d:%02d:%02d\n===\n%s\n===\n",attacker_ip,ptm->tm_hour,ptm->tm_min, ptm->tm_sec,(char *)buf);
+		char *attacker_ip=spock_xmalloc(129*sizeof(char));
+		spock_burn_mem(attacker_ip,0,128); // save one byte for canary, if you compile with full hardening argvs
+		spock_get_ip_str(&addr,attacker_ip,128);
+		int lenmax=(num+128+128)*sizeof(char);
+		char *log_line=spock_xmalloc(lenmax);
+		spock_burn_mem(log_line,0,lenmax-1);
+		time_t rawtime = time(NULL);
+		struct tm *ptm = localtime(&rawtime);
+ 		snprintf(log_line,lenmax-1,"Attacker IP: %s\ndatetime: %02d:%02d:%02d\n===\n%s\n===\n",attacker_ip,ptm->tm_hour,ptm->tm_min, ptm->tm_sec,(char *)buf);
 
-        if(SPOCK_BUGVIEW==1)
+		if(SPOCK_BUGVIEW==1)
 			printf("\n%s---> SPOCK DEBUG MODE <-========\n%s\n=======-> end DEBUG MODE\n%s",RED,log_line,LAST);
 		
-        spock_write_log(log_line);
+        	spock_write_log(log_line);
 
-        // free heap
+        	// free heap
 		free(attacker_ip);
 		free(log_line);
 		attacker_ip=NULL;
 		log_line=NULL;
 
-        return true;
+        	return true;
 	}
 
 
