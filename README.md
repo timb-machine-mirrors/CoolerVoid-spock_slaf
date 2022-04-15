@@ -36,7 +36,7 @@ Now you can see the shared library "spock_slaf.so.1" in "bin" directory.
 
 
 
-Second step inject
+Second step inject to protect
 --
 
 Second step is inject shared library in your binary that uses OpenSSL following communication context(server).
