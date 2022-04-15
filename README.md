@@ -31,12 +31,13 @@ Compile the content:
 ```
 $ make clean; make
 ```
-Now you can see the shared library in "bin" directory.
+Now you can see the shared library "spock_slaf.so.1" in "bin" directory.
 
 Second step is inject shared library in your binary that uses OpenSSL following communication context(server).
 So uses [LD_PRELOAD](https://catonmat.net/simple-ld-preload-tutorial) trick:
 ```
 $ LD_PRELOAD=/home/cooler/spock_slaf/bin/spock_slaf.so.1 bin/optionscat
+# note: change /home/cooler/spock_slaf/bin/ to your full path name
 ```
 Looking to this example, so has been tested in [OptionsCat financial software](https://github.com/CoolerVoid/optionscat).
 If anyone attacks the optionscat server, you can see the full log in the file "spock_agressors.log".
