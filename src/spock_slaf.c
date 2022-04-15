@@ -1,19 +1,18 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 #include <fcntl.h>
 #include <dlfcn.h>
 #include <unistd.h>
 #include <netinet/in.h>
-#include <stdint.h>
 #include <sys/uio.h>
 #include <arpa/inet.h>
-#include <stdbool.h>
 #include <assert.h>
 #include <time.h>
 #include <errno.h>
-#include <stdint.h>
 
 // colors macro
 #define RED "\033[22;31m"
