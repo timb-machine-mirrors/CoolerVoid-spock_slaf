@@ -47,13 +47,13 @@ If anyone attacks the optionscat server, you can see the full log in the file "s
 * **Curious fact:** The name Spock is my dog's name and a little homage to the Star Trek series.
 
 
-Reference:
+References:
 ---
 
-https://www.openssl.org/docs/man1.1.1/man3/SSL_read.html
-https://www.linuxjournal.com/article/7795
-https://www.kernel.org/doc/html/v4.16/userspace-api/seccomp_filter.html
-https://man7.org/linux/man-pages/man8/ld.so.8.html
+* https://www.openssl.org/docs/man1.1.1/man3/SSL_read.html
+* https://www.linuxjournal.com/article/7795
+* https://www.kernel.org/doc/html/v4.16/userspace-api/seccomp_filter.html
+* https://man7.org/linux/man-pages/man8/ld.so.8.html
 
 
 
