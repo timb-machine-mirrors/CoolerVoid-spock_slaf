@@ -45,8 +45,21 @@ $ LD_PRELOAD=/home/cooler/spock_slaf/bin/spock_slaf.so.1 bin/optionscat
 Looking to this example, so has been tested in [OptionsCat financial software](https://github.com/CoolerVoid/optionscat).
 If anyone attacks the optionscat server, you can see the full log in the file "spock_agressors.log".
 
+
+
+Extra content
+--
+
+* You can customize the list of attack payloads to block, please look that [following here](https://github.com/CoolerVoid/spock_slaf/blob/main/src/spock_slaf.c#L271).
+* You can gain performance in HTTP context, if set macro [SPOCK_ONLY_HTTP to "1"](https://github.com/CoolerVoid/spock_slaf/blob/main/src/spock_slaf.c#L40).
+* You can remove debug mode, if set macro [SPOCK_BUGVIEW to "0"](https://github.com/CoolerVoid/spock_slaf/blob/main/src/spock_slaf.c#L28).
+
+
+
+
 Thank you
 --
+
 * Thank you for using my tool. Any problem with the tool or suggestion, please open a GitHub issue in this repository. I will be delighted to help anyone.
 
 * **Curious fact:** The name Spock is my dog's name and a little homage to the Star Trek series.
