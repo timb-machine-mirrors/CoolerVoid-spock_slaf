@@ -12,7 +12,8 @@ Features
 ---
 * Action to Block, log and detect security anomalies from SSL_read() input buffers.
 * Anyone can load spock_slaf in any Linux binary.
-* If detect anomaly in TLS context, Spock saves the IP address of the attacker, date time and attack register in log file "spock_agressors.log".
+* If detect anomaly in TLS context, Spock saves the IP address of the attacker, date time and attack "payload" register in log file "spock_agressors.log".
+
 
 The first step to deploy
 --
