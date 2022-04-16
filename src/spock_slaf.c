@@ -72,13 +72,84 @@ volatile void *spock_burn_mem(volatile void *dst, int c, size_t len)
 	return dst;
 }
 
+// Deterministic Finite Automata to check if letter exist between a-z or A-Z
+int spock_test_letter(char p)
+{
+	unsigned char yych;
+
+	yych = p;
+	switch (yych) {
+	case 'A':
+	case 'B':
+	case 'C':
+	case 'D':
+	case 'E':
+	case 'F':
+	case 'G':
+	case 'H':
+	case 'I':
+	case 'J':
+	case 'K':
+	case 'L':
+	case 'M':
+	case 'N':
+	case 'O':
+	case 'P':
+	case 'Q':
+	case 'R':
+	case 'S':
+	case 'T':
+	case 'U':
+	case 'V':
+	case 'W':
+	case 'X':
+	case 'Y':
+	case 'Z':
+	case 'a':
+	case 'b':
+	case 'c':
+	case 'd':
+	case 'e':
+	case 'f':
+	case 'g':
+	case 'h':
+	case 'i':
+	case 'j':
+	case 'k':
+	case 'l':
+	case 'm':
+	case 'n':
+	case 'o':
+	case 'p':
+	case 'q':
+	case 'r':
+	case 's':
+	case 't':
+	case 'u':
+	case 'v':
+	case 'w':
+	case 'x':
+	case 'y':
+	case 'z':	goto yy3;
+	default:	goto yy2;
+	}
+yy2:
+	{ return 1; }
+yy3:
+	++p;
+	{ return 0; }
+    
+
+}
 
 void _CONSTRUCTOR hook_init(void) 
 {
 	spock_ctx.logfd = open(SPOCK_LOG, O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-	if (spock_ctx.logfd < 0) {
-		fprintf(stderr, "unable to create " SPOCK_LOG "\n");
-		exit(EXIT_FAILURE);
+
+	if (spock_ctx.logfd < 0) 
+	{
+		SPOCK_DEBUG("Unable to create %s",SPOCK_LOG);
+		exit(0);
 	}
 
 	dlerror();
@@ -88,16 +159,17 @@ void _CONSTRUCTOR hook_init(void)
 }
 
 
-void _DESTRUCTOR hook_fini(void) 
+void _DESTRUCTOR hook_end(void) 
 {
 	close(spock_ctx.logfd);
 }
 
 
+
 static void *spock_xmalloc_fatal(size_t size) 
 {
 
-	SPOCK_DEBUG("\n Memory FAILURE...\n size dbg: %lu\n",size);
+	SPOCK_DEBUG("\n Memory FAILURE...\n size dbg: %zu\n",size);
 
 	exit(0);
 }
@@ -113,6 +185,75 @@ void *spock_xmalloc (size_t size)
 	return ptr;
 }
 
+
+void *spock_xrealloc(void *ptr, size_t size)
+{
+	ptr = realloc(ptr, size);
+	if (!ptr) {
+		SPOCK_DEBUG("realloc failed: %s", strerror(errno));
+		exit(0);
+	}
+	return ptr;
+}
+
+
+// Fork of OpenBSD's function
+/*
+ * This is sqrt(SIZE_MAX+1), as s1*s2 <= SIZE_MAX
+ * if both s1 < MUL_NO_OVERFLOW and s2 < MUL_NO_OVERFLOW
+ */
+#define SPOCK_MUL_NO_OVERFLOW	((size_t)1 << (sizeof(size_t) * 4))
+
+void *spock_reallocarray(void *optr, size_t nmemb, size_t size)
+{
+	if ((nmemb >= SPOCK_MUL_NO_OVERFLOW || size >= SPOCK_MUL_NO_OVERFLOW) &&
+	    nmemb > 0 && SIZE_MAX / nmemb < size) {
+		errno = ENOMEM;
+		return NULL;
+	}
+	return spock_xrealloc(optr, size * nmemb);
+}
+
+// Fork of OpenBSD's function
+void *spock_xmallocarray(size_t num, size_t size)
+{
+        void *result = spock_reallocarray(NULL, num, size);
+
+        if (!result) 
+        {
+                SPOCK_DEBUG("reallocarray failed: %s", strerror(errno));
+                exit(0);
+        }
+
+        return result;
+}
+
+
+char *all2lowcase(char *str) 
+{
+	char *str_new=spock_xmallocarray(sizeof(char),strlen(str)+1);
+	int i=0;
+	
+	while(*str != '\0')
+	{
+		// Deterministic Finite Automata to check letter and case 
+		if(!spock_test_letter( *str ) )
+		{
+			*(str_new+i)=*str | 0x20;	
+			i++;
+		} else {
+			*(str_new+i)=*str;
+			i++;
+		}
+
+
+		str++;	
+	}
+
+
+	return str_new;
+
+}
 
 void spock_write_log (char *str)
 {
@@ -188,6 +329,8 @@ bool spock_is_request(char *ptr)
 	if(strnlen(ptr,12) < 10)
 		return false;
 
+// Sp don't use strcmp() or strncmp() in this point,  because not thread-safe 
+// sometimes HTTPd engines uses loop event or threadpool based and can crash strcmp() context.
 // is GET ?
  	if(ptr[0]=='G' && ptr[1]=='E' && ptr[2]=='T')
 		return true;
@@ -214,7 +357,7 @@ bool spock_is_request(char *ptr)
  *
  * This code is derived from software contributed to Berkeley by
  * Chris Torek.*/
-char *BSD_strnstr(const char *s, const char *find, size_t slen)
+char *spock_strnstr(const char *s, const char *find, size_t slen)
 {
 	char c, sc;
 	size_t len;
@@ -296,18 +439,24 @@ bool spock_check_block(char *input, int num)
 	"<!--#echo var=",
 	"<!--#exec cmd=",
 	"autofillupload", // XXE
-	"ENTITY xxe",
+	"entity xxe",
 	"///"
 	};
 
+    // prepare context filter
+    char *prepared_input=all2lowcase(input);
 
 	total_list = sizeof(list) / sizeof(list[0]);
-    	total_shellcodes = sizeof(custom_shellcode) / sizeof(custom_shellcode[0]);
+    total_shellcodes = sizeof(custom_shellcode) / sizeof(custom_shellcode[0]);
 
 	while(i!=total_shellcodes)
 	{
-		if(BSD_strnstr(input, custom_shellcode[i],num))
+		if(spock_strnstr(prepared_input, custom_shellcode[i],num))
+		{
+			free(prepared_input);
+			prepared_input=NULL;
 			return true;
+		}
 		i++;
 	}
 
@@ -315,11 +464,17 @@ bool spock_check_block(char *input, int num)
 
 	while(i!=total_list)
 	{
-		if(BSD_strnstr(input, list[i],num))
+		if(spock_strnstr(prepared_input, list[i],num))
+		{
+
+			free(prepared_input);
+			prepared_input=NULL;
 			return true;
+		}
 		i++;
 	}
 
+	free(prepared_input);
 	return false;
 }
 
@@ -333,8 +488,8 @@ bool spock_detect_anomaly( int fd, void *buf, int num)
 
 	if (getpeername(fd, &addr, &addrlen) < 0) 
 	{
-		fprintf(stderr, "getpeername error\n");
-		exit(EXIT_FAILURE);
+		SPOCK_DEBUG("getpeername error\n");
+		exit(0);
 	}
 
 	if(SPOCK_BUGVIEW==1)
@@ -349,11 +504,11 @@ bool spock_detect_anomaly( int fd, void *buf, int num)
 
 	if(spock_check_block((char *)buf,num)==true)
 	{
-		char *attacker_ip=spock_xmalloc(129*sizeof(char));
+		char *attacker_ip=spock_xmallocarray(129,sizeof(char));
 		spock_burn_mem(attacker_ip,0,128); // save one byte for canary, if you compile with full hardening argvs
 		spock_get_ip_str(&addr,attacker_ip,128);
 		int lenmax=(num+128+128)*sizeof(char);
-		char *log_line=spock_xmalloc(lenmax);
+		char *log_line=spock_xmallocarray(lenmax,sizeof(char));
 		spock_burn_mem(log_line,0,lenmax-1);
 		time_t rawtime = time(NULL);
 		struct tm *ptm = localtime(&rawtime);
@@ -362,15 +517,16 @@ bool spock_detect_anomaly( int fd, void *buf, int num)
 		if(SPOCK_BUGVIEW==1)
 			printf("\n%s---> SPOCK DEBUG MODE <-========\n%s\n=======-> end DEBUG MODE\n%s",RED,log_line,LAST);
 		
-        	spock_write_log(log_line);
+		// write log
+        spock_write_log(log_line);
 
-        	// free heap
+        // free HEAP 
 		free(attacker_ip);
 		free(log_line);
 		attacker_ip=NULL;
 		log_line=NULL;
 
-        	return true;
+        return true;
 	}
 
 
