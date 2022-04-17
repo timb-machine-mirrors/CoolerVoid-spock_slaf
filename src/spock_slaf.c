@@ -329,8 +329,7 @@ bool spock_is_request(char *ptr)
 	if(strnlen(ptr,12) < 10)
 		return false;
 
-// Sp don't use strcmp() or strncmp() in this point,  because not thread-safe 
-// sometimes HTTPd engines uses loop event or threadpool based and can crash strcmp() context.
+// So don't use strcmp() or strncmp() at this point. These functions are not thread-safe. Keep it like this:
 // is GET ?
  	if(ptr[0]=='G' && ptr[1]=='E' && ptr[2]=='T')
 		return true;
