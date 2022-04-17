@@ -15,7 +15,7 @@ Following additional facts, external rules of server using **[BSD's firewall](ht
 Features
 ---
 * Action to Block, log and detect security anomalies from SSL_read() input buffers.
-* Anyone can load spock_slaf in any Linux binary.
+* Capacity to run in any programme that uses the OpenSSL library.
 * If detect anomaly in TLS context, Spock saves the IP address of the attacker, date time and attack "payload" register in log file "spock_agressors.log".
 
 
