@@ -448,7 +448,7 @@ bool spock_check_block(char *input, int num)
 	};
 
     // prepare context filter
-    char *prepared_input=all2lowcase(input);
+	char *prepared_input=all2lowcase(input);
 
 	total_list = sizeof(list) / sizeof(list[0]);
 	total_shellcodes = sizeof(custom_shellcode) / sizeof(custom_shellcode[0]);
