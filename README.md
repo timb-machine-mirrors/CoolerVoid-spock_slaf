@@ -1,5 +1,5 @@
 # Spock SLAF 
-Spock SLAF is a **Shared Library for Application Firewall** "SLAF". The principal function is to protect any service that runs in a binary context that uses the OpenSSL library. The shared library inserts [hooking in OpenSSL resource](https://www.openssl.org/docs/man1.1.1/man3/SSL_read.html), to intercept all communication to detect security anomalies, block and log attacks like buffer overflow, path traversal, XXE and SQL injection.
+Spock SLAF is a **Shared Library Application Firewall** "SLAF". The principal function is to protect any service that runs in a binary context that uses the OpenSSL library. The shared library inserts [hooking in OpenSSL resource](https://www.openssl.org/docs/man1.1.1/man3/SSL_read.html), to intercept all communication to detect security anomalies, block and log attacks like buffer overflow, path traversal, XXE and SQL injection.
 
 <img align="left" width="280" height="240" src="https://github.com/CoolerVoid/spock_slaf/blob/main/doc/spock_slaf_logo.png">
 My beginning purpose in this project is to protect any binary that has communication with TLS using OpenSSL resources. 
