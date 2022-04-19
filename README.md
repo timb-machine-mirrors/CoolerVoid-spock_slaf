@@ -4,6 +4,7 @@ Spock SLAF is a **Shared Library Application Firewall** "SLAF". It has the purpo
 <img align="left" width="280" height="240" src="https://github.com/CoolerVoid/spock_slaf/blob/main/doc/spock_slaf_logo.png">
 My beginning purpose in this project is to protect any binary that has communication with TLS using OpenSSL resources. 
 
+## Etymology
 
 The motivation for this tool was released during a mitigation project in the past seven years an old. Following my freelancer task, an old client has disclosed a problem around deprecated proprietary binary with many vulnerabilities like Heap buffer overflows, remote buffer overflow and path traversal. The big problem of binary context is the application turn abandonware with no patch fixes, but the enterprise needs to run production loads. So my solution was to insert **[seccomp()](https://kubernetes.io/docs/tutorials/security/seccomp/)** to restrict syscalls in the process(you know, block calls like system()/execv()). I replaced libc's malloc() with **["DieHard", an error-resistant memory allocator](https://github.com/emeryberger/DieHard)**. On the other hand, another initiative was little hooking in OpenSSL's SSL_read() function to restrict some evil payloads, another option.
 
@@ -56,10 +57,10 @@ If anyone attacks the optionscat server, you can see the full log in the file "s
 
 Extra content
 --
-
-* You can customize the list of attack payloads to block. Please look at [the following here](https://github.com/CoolerVoid/spock_slaf/blob/main/src/spock_slaf.c#L415).
-* You can gain performance in HTTP context, if set macro [SPOCK_ONLY_HTTP to "1"](https://github.com/CoolerVoid/spock_slaf/blob/main/src/spock_slaf.c#L40).
-* You can remove debug mode, if set macro [SPOCK_BUGVIEW to "0"](https://github.com/CoolerVoid/spock_slaf/blob/main/src/spock_slaf.c#L28).
+* You can customize the score rank to match the anomaly, if set macro **SPOCK_score** to any number between 1 to 9.
+* You can customize the list of attack payloads to block. Please look at the source code.
+* You can gain performance in HTTP context, if set macro **SPOCK_ONLY_HTTP to "1"** in the source code.
+* You can remove debug mode, if set macro **SPOCK_BUGVIEW to "0"** in the source code.
 
 
 
