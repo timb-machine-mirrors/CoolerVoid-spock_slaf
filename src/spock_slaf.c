@@ -89,7 +89,7 @@ spock_write_log (char *str)
 				    exit(0);
 				}
 
-			fprintf(arq,"%s\n",str); 
+				fprintf(arq,"%s\n",str); 
 
 				if (fclose(arq) == EOF)
 				{
@@ -2015,6 +2015,7 @@ spock_score_sqli(char *input)
 {
 	int total_list = 0;
 	int score = 0, i = 0;
+	
 	const char *list[] = 
 	{
 		"insert","union","where","sleep","delete","mapreduce","timeout","@version","db.injection","/**/"
@@ -2089,21 +2090,21 @@ spock_dfa_check(char *input)
 
 		switch (spock_dfa_filter(&input, &last)) 
 		{
-			    case SQLI:
-				return 1;
-			    break;
+			case SQLI:
+			return 1;
+			break;
 
-				case XSS:
-				return 2;
-			   	break;
+			case XSS:
+			return 2;
+			break;
 
-				case PATHTRAVERSAL:
-				return 3;
-				break;
+			case PATHTRAVERSAL:
+			return 3;
+			break;
 			  
-			    case FILTER_END:
-				return 0;	
-			    break;
+			case FILTER_END:
+			return 0;	
+			break;
 		}
 
 	return 0;
@@ -2133,10 +2134,10 @@ split_and_check (char * input,  int (*lambda)(char *argvs))
 					score=spock_score_sqli(input);
 						if(score >= SPOCK_SCORE)
 						{
-	        				spock_write_log("Attack type: SQl injection\n");
+	        					spock_write_log("Attack type: SQl injection\n");
 							return true;
 						}
-				    break;
+				    	break;
 
 					case 2:
 					score=spock_score_xss(input);
@@ -2598,9 +2599,9 @@ bool spock_detect_anomaly( int fd, void *buf, int num)
 					printf("\n%s---> SPOCK DEBUG MODE <-========\n%s\n=======-> end DEBUG MODE\n%s",RED,log_line,LAST);
 			
 			// write log
-	        spock_write_log(log_line);
+	        	spock_write_log(log_line);
 
-	        // free HEAP 
+	        	// free HEAP 
 			free(attacker_ip);
 			free(log_line);
 			attacker_ip=NULL;
