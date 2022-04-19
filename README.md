@@ -1,5 +1,5 @@
 # Spock SLAF 
-Spock SLAF is a **Shared Library Application Firewall** "SLAF". It has the purpose to protect any service that uses the [OpenSSL library](https://www.openssl.org/docs/man1.1.1/man3/SSL_read.html). The SLAF inserts hooking to intercept all communication to detect security anomalies and block and log attacks like buffer overflow, path traversal, XXE and SQL injection. So to detect anomalies, Spock uses deterministic finite automata with rank scores to compute risks and create alerts for each context.
+Spock SLAF is a **Shared Library Application Firewall** "SLAF". It has the purpose to protect any service that uses the [OpenSSL library](https://www.openssl.org/docs/man1.1.1/man3/SSL_read.html). The SLAF inserts hooking to intercept all communication to detect security anomalies and block and log attacks like buffer overflow, path traversal, XXE and SQL injection. So to detect anomalies, Spock uses [Deterministic Finite Automaton](https://en.wikipedia.org/wiki/Deterministic_finite_automaton) with rank scores to compute risks and create alerts for each context.
 
 <img align="left" width="280" height="240" src="https://github.com/CoolerVoid/spock_slaf/blob/main/doc/spock_slaf_logo.png">
 My beginning purpose in this project is to protect any binary that has communication with TLS using OpenSSL resources. 
