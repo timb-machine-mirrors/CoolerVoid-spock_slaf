@@ -1,5 +1,5 @@
 # Spock SLAF 
-Spock SLAF is a **Shared Library Application Firewall** "SLAF". It has the purpose to protect any service that uses the [OpenSSL library](https://www.openssl.org/docs/man1.1.1/man3/SSL_read.html). The SLAF inserts hooking to intercept all communication to detect security anomalies and block and log attacks like buffer overflow, path traversal, XXE and SQL injection.
+Spock SLAF is a **Shared Library Application Firewall** "SLAF". It has the purpose to protect any service that uses the [OpenSSL library](https://www.openssl.org/docs/man1.1.1/man3/SSL_read.html). The SLAF inserts hooking to intercept all communication to detect security anomalies and block and log attacks like buffer overflow, path traversal, XXE and SQL injection. So to detect anomalies, Spock uses deterministic finite automata with rank scores to compute risks and create alerts for each context.
 
 <img align="left" width="280" height="240" src="https://github.com/CoolerVoid/spock_slaf/blob/main/doc/spock_slaf_logo.png">
 My beginning purpose in this project is to protect any binary that has communication with TLS using OpenSSL resources. 
@@ -49,6 +49,7 @@ So now we can [use LD_PRELOAD trick:](https://catonmat.net/simple-ld-preload-tut
 ```
 $ LD_PRELOAD=/home/cooler/spock_slaf/bin/spock_slaf.so.1 bin/optionscat
 # note: change /home/cooler/spock_slaf/bin/ to your full path name
+#note: change bin/optionscat to your binary
 ```
 Looking to this example, so has been tested in [OptionsCat financial software](https://github.com/CoolerVoid/optionscat).
 If anyone attacks the optionscat server, you can see the full log in the file "spock_agressors.log".
