@@ -49,7 +49,7 @@ So now we can [use LD_PRELOAD trick:](https://catonmat.net/simple-ld-preload-tut
 ```
 $ LD_PRELOAD=/home/cooler/spock_slaf/bin/spock_slaf.so.1 bin/optionscat
 # note: change /home/cooler/spock_slaf/bin/ to your full path name
-#note: change bin/optionscat to your binary
+# note: change bin/optionscat to your binary
 ```
 Looking to this example, so has been tested in [OptionsCat financial software](https://github.com/CoolerVoid/optionscat).
 If anyone attacks the optionscat server, you can see the full log in the file "spock_agressors.log".
