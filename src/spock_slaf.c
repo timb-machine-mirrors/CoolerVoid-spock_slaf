@@ -118,7 +118,7 @@ spock_burn_mem(volatile void *dst, int c, size_t len)
 	return dst;
 }
 
-//  re2c --dfa-minimization moore --unicode thiscode.c > new_code.c; gcc -o new_code new_code.c; ./new_code
+//  Generated DFA
 int 
 spock_dfa_filter(char** p, char** lex)
 {
