@@ -4,6 +4,10 @@ Spock SLAF is a **Shared Library Application Firewall** "SLAF". It has the purpo
 <img align="left" width="280" height="240" src="https://github.com/CoolerVoid/spock_slaf/blob/main/doc/spock_slaf_logo.png">
 My beginning purpose in this project is to protect any binary that has communication with TLS using OpenSSL resources. 
 
+## Video demo
+
+https://www.youtube.com/watch?v=Lm3kpA-NZnE
+
 ## Etymology
 
 The motivation for this tool was released during a mitigation project in the past seven years an old. Following my freelancer task, an old client has disclosed a problem around deprecated proprietary binary with many vulnerabilities like Heap buffer overflows, remote buffer overflow and path traversal. The big problem of binary context is the application turn abandonware with no patch fixes, but the enterprise needs to run production loads. So my solution was to insert **[seccomp()](https://kubernetes.io/docs/tutorials/security/seccomp/)** to restrict syscalls in the process(you know, block calls like system()/execv()). I replaced libc's malloc() with **["DieHard", an error-resistant memory allocator](https://github.com/emeryberger/DieHard)**. On the other hand, another initiative was little hooking in OpenSSL's SSL_read() function to restrict some evil payloads, another option.
@@ -47,12 +51,11 @@ Second step is inject shared library in your binary that uses OpenSSL following 
 
 So now we can [use LD_PRELOAD trick:](https://catonmat.net/simple-ld-preload-tutorial)
 ```
-$ LD_PRELOAD=/home/cooler/spock_slaf/bin/spock_slaf.so.1 bin/optionscat
+$ LD_PRELOAD=/home/cooler/spock_slaf/bin/spock_slaf.so.1 bin/rest_server
 # note: change /home/cooler/spock_slaf/bin/ to your full path name
-# note: change bin/optionscat to your binary
 ```
-Looking to this example, so has been tested in [OptionsCat financial software](https://github.com/CoolerVoid/optionscat).
-If anyone attacks the optionscat server, you can see the full log in the file "spock_agressors.log".
+Looking to this example, so has been tested in [simple rest server](https://github.com/CoolerVoid/optionscat).
+If anyone attacks the rest_server, you can see the full log in the file "spock_agressors.log".
 
 
 
