@@ -26,7 +26,7 @@
 // anomalys log file
 #define SPOCK_LOG "spock_agressors.log"
 // DFA taint analysis rank to match
-#define SPOCK_SCORE 4
+#define SPOCK_SCORE 2
  
 // set zero to stop DEBUG mode
 #define SPOCK_BUGVIEW  1
@@ -41,7 +41,7 @@
  fprintf(stderr,"\n\n--- DEBUG-END ---\n"); \
 } while (0);
 // detect only HTTP anomalys, if set to zero is can be util for AMQ, zeroMQ, gRPC, SMTP, IMAP...
-#define SPOCK_ONLY_HTTP 0
+#define SPOCK_ONLY_HTTP 1
 
 // hook rites
 #define _CONSTRUCTOR __attribute__((constructor))
@@ -1157,7 +1157,7 @@ spock_score_sqli(char *input)
 	
 	const char *list[] = 
 	{
-		"insert","union","where","sleep","delete","mapreduce","timeout","@version","db.injection","/**/"
+		"insert","union","where","sleep","delete","mapreduce","timeout","@version","db.injection","/**/","drop"
 	};
 
 	total_list = sizeof(list) / sizeof(list[0]);
@@ -1189,7 +1189,7 @@ spock_score_pathtraversal(char *input)
 		{
 			score+=spock_counter_matchs(input,list[i]);
 			i++;
-				if(SPOCK_SCORE<=score)
+				if(SPOCK_SCORE<score)
 					return score;
 		}
 
@@ -1212,7 +1212,7 @@ spock_score_xss(char *input)
 		{
 			score+=spock_counter_matchs(input,list[i]);
 			i++;
-				if(SPOCK_SCORE<=score)
+				if(SPOCK_SCORE<score)
 					return score;
 		}
 
@@ -1266,7 +1266,8 @@ spock_check (char * input)
 				{
 
 						case 1:
-						score=spock_score_sqli(input);
+						score+=1;
+						score+=spock_score_sqli(input);
 							if(score >= SPOCK_SCORE)
 							{
 		        					spock_write_log("Attack type: SQl injection\n");
@@ -1275,7 +1276,8 @@ spock_check (char * input)
 					    	break;
 
 						case 2:
-						score=spock_score_xss(input);
+						score+=1;
+						score+=spock_score_xss(input);
 							if(score >= SPOCK_SCORE)
 							{
 		        					spock_write_log("Attack type: XSS\n");
@@ -1284,7 +1286,8 @@ spock_check (char * input)
 					   	break;
 
 						case 3:
-						score=spock_score_pathtraversal(input);
+						score+=1;
+						score+=spock_score_pathtraversal(input);
 							if(score >= SPOCK_SCORE)
 							{
 		        					spock_write_log("Attack type: path traversal\n");
