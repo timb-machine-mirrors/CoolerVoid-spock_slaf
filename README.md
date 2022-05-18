@@ -61,7 +61,7 @@ If anyone attacks the rest_server, you can see the full log in the file "spock_a
 
 Extra content
 --
-* You can customize the score rank to detect the anomaly, if set macro **SPOCK_SCORE** to any number between 1 to 10(High number is more sensitive).
+* You can customize the score rank to detect the anomaly, if set macro **SPOCK_SCORE** to any number between 1 to 10(Low number is more sensitive).
 * You can customize the list of attack payloads to block. Please look at the source code.
 * You can gain performance in HTTP context, if set macro **SPOCK_ONLY_HTTP to "1"** in the source code.
 * You can remove debug mode, if set macro **SPOCK_BUGVIEW to "0"** in the source code.
