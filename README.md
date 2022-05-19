@@ -4,6 +4,13 @@ Spock SLAF is a **Shared Library Application Firewall** "SLAF". It has the purpo
 <img align="left" width="280" height="240" src="https://github.com/CoolerVoid/spock_slaf/blob/main/doc/spock_slaf_logo.png">
 My beginning purpose in this project is to protect any binary that has communication with TLS using OpenSSL resources. 
 
+Features
+---
+* Action to Block, log and detect security anomalies like SQL injection, XSS, path traversal from SSL_read() function(get input buffers).
+* Capacity to run in any programme that uses the OpenSSL library.
+* If detect anomaly in TLS context, Spock saves the IP address of the attacker, date time and attack "payload" register in log file "spock_agressors.log".
+
+
 ## Video demo
 
 https://www.youtube.com/watch?v=Lm3kpA-NZnE
@@ -16,12 +23,6 @@ Another option is to use **[libreSSL](https://www.libressl.org/)** and up a moni
 
 Following additional facts, external rules of server using **[BSD's firewall](https://www.openbsd.org/faq/pf/filter.html)(aka packet filter)**, using custom rules to **[allow only by IP and OS fingerprint](https://www.openbsd.org/faq/pf/filter.html#osfp)**. So that freelancer task stuck in my mind, now you can see my new solution following a global approach to protect TLS communication in the server context.
 
-
-Features
----
-* Action to Block, log and detect security anomalies from SSL_read() input buffers.
-* Capacity to run in any programme that uses the OpenSSL library.
-* If detect anomaly in TLS context, Spock saves the IP address of the attacker, date time and attack "payload" register in log file "spock_agressors.log".
 
 
 The first step compile to deploy
@@ -56,7 +57,6 @@ $ LD_PRELOAD=/home/cooler/spock_slaf/bin/spock_slaf.so.1 bin/rest_server
 ```
 Looking to this example, so has been tested in [simple rest server](https://github.com/CoolerVoid/optionscat).
 If anyone attacks the rest_server, you can see the full log in the file "spock_agressors.log".
-
 
 
 Extra content
