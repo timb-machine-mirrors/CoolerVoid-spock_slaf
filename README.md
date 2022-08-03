@@ -9,7 +9,11 @@ Features
 * Action to Block, log and detect security anomalies like SQL injection, XSS, path traversal from SSL_read() function(get input buffers).
 * Capacity to run in any programme that uses the OpenSSL library.
 * If detect anomaly in TLS context, Spock saves the IP address of the attacker, date time and attack "payload" register in log file "spock_agressors.log".
-
+* Block SQL injection attack
+* Block XSS attack
+* Block path traversal attack
+* Block remote buffer overflow attack(detect arch of binary and use custom list of shellcodes)
+* Block format string attacks
 
 ## Video demo
 
@@ -59,14 +63,71 @@ Looking to this example, so has been tested in [simple rest server](https://gith
 If anyone attacks the rest_server, you can see the full log in the file "spock_agressors.log".
 
 
-Extra content
+Extra tips and tricks for customization
 --
 * You can customize the score rank to detect the anomaly, if set macro **SPOCK_SCORE** to any number between 1 to 10(Low number is more sensitive).
 * You can customize the list of attack payloads to block. Please look at the source code.
 * You can gain performance in HTTP context, if set macro **SPOCK_ONLY_HTTP to "1"** in the source code.
 * You can remove debug mode, if set macro **SPOCK_BUGVIEW to "0"** in the source code.
 
+Understand anti buffer overflow trap
+--
+So Spock detects shellcode in payloads and blocks attacks of memory corruption, following common chunks in registers for the context of the binary in execution, for example detecting x32 or x64 architecture and blocking specific attacks for architecture.
+```c
+#if UINTPTR_MAX == 0xffffffffffffffff
+	const char *custom_shellcode[] = 
+	{
+		"\\x48\\x31\\xc0",                    // xor    rax,rax  X64 LINUX
+		"\\x48\\x31\\xdb",                    // xor    rbx,rbx  X64 LINUX
+	    	"\\x48\\x31\\xff",                    // xor    rdi,rdi  X64 LINUX
+	    	"\\x48\\x31\\xf6",                    // xor    rsi,rsi  X64 LINUX
+	    	"\\x48\\x31\\xd2",                    // xor    rdx,rdx  X64 LINUX
+	    	"\\x48\\x89\\xe6",                    // mov    rsp,rsi  x64 LINUX 
+	    	"\\x48\\x89\\xe7"                    // mov    rsp,rdi  x64 LINUX
+	};
+#elif UINTPTR_MAX == 0xffffffff	
+	const char *custom_shellcode[] = 
+	{
+		"\\x31\\xc0",                         // xor    eax,eax  x32 LINUX
+	    	"\\x31\\xc9",                         // xor    ecx,ecx  X32 LINUX
+	    	"\\x31\\xdb",                         // xor    ebx,ebx  x32 LINUX
+	    	"\\x31\\xd2",                         // xor    edx,edx  X32 LINUX
+	    	"\\x89\\xe1",                         // mov    esp,ecx  x32 LINUX
+	    	"\\x89\\xe3"                         // mov    esp,ebx  X32 LINUX
+	};
+#endif
+	// ARM, MIPS in the future -- TODO
 
+
+// generic payloads to block
+
+	const char *list[] = 
+	{
+		"\\x90\\x90", // block NOP
+		"\\x00\\x00", // nullbyte
+		"\\xcd\\x80", // int $0x80 
+```
+So in additional point, Spock uses a custom allocator following anti integer overflow practice of OpenBSD operational system.
+```c
+// Fork of OpenBSD's function
+/*
+ * This is sqrt(SIZE_MAX+1), as s1*s2 <= SIZE_MAX
+ * if both s1 < MUL_NO_OVERFLOW and s2 < MUL_NO_OVERFLOW
+ */
+#define SPOCK_MUL_NO_OVERFLOW	((size_t)1 << (sizeof(size_t) * 4))
+
+void *
+spock_reallocarray(void *optr, size_t nmemb, size_t size)
+{
+		if ((nmemb >= SPOCK_MUL_NO_OVERFLOW || size >= SPOCK_MUL_NO_OVERFLOW) &&
+		    nmemb > 0 && SIZE_MAX / nmemb < size) 
+		{
+			errno = ENOMEM;
+			return NULL;
+		}
+	return spock_xrealloc(optr, size * nmemb);
+}
+```
 
 
 Thank you
